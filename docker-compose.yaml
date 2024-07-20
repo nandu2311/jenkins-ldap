@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  jenkis:
+  jenkins:
     build:
       context: ./jenkins
     ports:
@@ -17,20 +17,19 @@ services:
     build:
       context: ./slapd
     ports:
-      - 389:1389
-      - 636:1636
+      - 389:389
+      - 636:636
 
   phpldapadmin:
     image: docker.io/osixia/phpldapadmin:0.9.0
     environment:
-      PHPLDAPADMIN_LDAP_HOST: slapd
+      PHPLDAPADMIN_LDAP_HOSTS: slapd
       PHPLDAPADMIN_HTTPS: 'false'
     ports:
       - 8090:80
-    depend_on:
+    depends_on:
       - slapd
 
 volumes:
   jenkins_home:
-
 
