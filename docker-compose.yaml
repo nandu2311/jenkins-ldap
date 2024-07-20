@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  jenkis:
+    build:
+      context: ./jenkins
+    ports:
+      - 8080:8080
+      - 50000:50000
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    env_file: ./jenkins/secrets.env
+    depends_on:
+      - slapd
+
+  slapd:
+    build:
+      context: ./slapd
+    ports:
+      - 389:1389
+      - 636:1636
+
+  phpldapadmin:
+    image: docker.io/osixia/phpldapadmin:0.9.0
+    environment:
+      PHPLDAPADMIN_LDAP_HOST: slapd
+      PHPLDAPADMIN_HTTPS: 'false'
+    ports:
+      - 8090:80
+    depend_on:
+      - slapd
+
+volumes:
+  jenkins_home:
+
+
